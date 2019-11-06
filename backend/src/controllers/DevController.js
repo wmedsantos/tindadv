@@ -1,0 +1,44 @@
+const axios = require('axios');
+const Proc = require('../models/Proc');
+const Dev = require('../models/Dev');
+
+module.exports = {
+  async index(req, res) {
+    const { user } = req.headers;
+    console.log(user);
+    const loggedDev = await Dev.findById(user);
+console.log(loggedDev);
+    const procs = await Proc.find({
+      $and: [
+        //{ _id: { $ne: user } },
+        { _id: { $nin: loggedDev.likes } },
+        { _id: { $nin: loggedDev.dislikes } },
+      ],
+    })
+
+    return res.json(procs);
+  },
+
+  async store(req, res) {
+    const { username } = req.body;
+
+    const userExists = await Dev.findOne({ user: username });
+
+    if (userExists) {
+      return res.json(userExists);
+    }
+
+    const response = await axios.get(`https://api.github.com/users/${username}`);
+
+    const { name, bio, avatar_url: avatar } = response.data;
+
+    const dev = await Dev.create({
+      name,
+      user: username,
+      bio,
+      avatar
+    })
+
+    return res.json(dev);
+  }
+};
