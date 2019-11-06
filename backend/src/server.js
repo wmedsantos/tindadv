@@ -16,8 +16,9 @@ io.on('connection', socket => {
 
   connectedUsers[user] = socket.id;
 });
-const mongoURL = 'mongodb://localhost/Tindev';
 
+const mongoURL = 'mongodb+srv://tadvusr:tadv123@cluster0-ox348.mongodb.net/test?retryWrites=true&w=majority';
+//const mongoURL = 'mongodb://localhost/Tindev';
 //mongoose.connect('mongodb+srv://omnistack:omnistack@cluster0-jxhrd.mongodb.net/omnistack8?retryWrites=true&w=majority', 
 mongoose.connect(mongoURL, {
     useNewUrlParser: true
